@@ -15,7 +15,7 @@
       <!--BODY-START--->
       <div id="template_app">
             <template>
-                  <v-app>
+                  <v-app dark>
                   
                         <!--NAVIGATION DRAWER START-->
                         <v-navigation-drawer :clipped="$vuetify.breakpoint.lgAndUp" v-model="drawer" fixed app>
@@ -23,7 +23,9 @@
 
                                     <template v-for="item in items">
 
-                                          <v-list-group v-if="item.children" 
+                                          <v-subheader v-if="item.subheader" class="mt-3" v-html="item.text"></v-subheader>
+
+                                          <v-list-group v-else-if="item.children" 
                                           v-model="item.model" :key="item.text" :prepend-icon="item.model ? item.icon : item['icon-alt']" append-icon="">
                                                 
                                                 <v-list-tile slot="activator">
@@ -32,12 +34,11 @@
                                                       </v-list-tile-content>
                                                 </v-list-tile>
                                                 <v-list-tile v-for="(child, i) in item.children" :key="i" @click="">
-                                                      <v-list-tile-action v-if="child.icon">
-                                                            <v-icon v-html="child.icon"></v-icon>
-                                                      </v-list-tile-action>
+                                                      
                                                       <v-list-tile-content>
                                                             <v-list-tile-title v-html="child.text"></v-list-tile-title>
                                                       </v-list-tile-content>
+                                                      
                                                 </v-list-tile>
 
                                           </v-list-group>
@@ -45,12 +46,13 @@
                                           <v-list-tile v-else 
                                           :key="item.text" @click="">
 
-                                                <v-list-tile-action>
-                                                      <v-icon v-html="item.icon"></v-icon>
-                                                </v-list-tile-action>
                                                 <v-list-tile-content>
                                                       <v-list-tile-title v-html="item.text"></v-list-tile-title>
                                                 </v-list-tile-content>
+
+                                                <v-list-tile-action>
+                                                      <v-icon v-html="item.icon"></v-icon>
+                                                </v-list-tile-action>
 
                                           </v-list-tile>
 
@@ -61,11 +63,42 @@
                         <!--NAVIGATION DRAWER END-->
 
                         <!--TOOLBAR START-->
-                        <v-toolbar :clipped-left="$vuetify.breakpoint.lgAndUp" color="blue darken-3" dark app fixed>
+                        <v-toolbar :clipped-left="$vuetify.breakpoint.lgAndUp" app fixed>
                               <v-toolbar-title style="width: 300px" class="ml-0 pl-3">
                                     <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
                                     <span class="hidden-sm-and-down" v-html="drawer_title"></span>
                               </v-toolbar-title>
+                              <v-spacer></v-spacer>
+                              
+
+                              <v-menu :nudge-width="100">
+                               
+                                    <v-btn slot="activator" icon>
+                                          <v-icon>more_vert</v-icon>
+                                    </v-btn>
+                                   
+                                    <v-list>
+
+                                          <v-list-tile @click="">
+                                                <v-list-tile-content>
+                                                      <v-list-tile-title>ACCOUNT</v-list-tile-title>
+                                                </v-list-tile-content>
+                                                <v-list-tile-action>
+                                                      <v-icon>account_circle</v-icon>
+                                                </v-list-tile-action>
+                                          </v-list-tile>
+
+                                          <v-list-tile @click="">
+                                                <v-list-tile-content>
+                                                      <v-list-tile-title>LOGOUT</v-list-tile-title>
+                                                </v-list-tile-content>
+                                                <v-list-tile-action>
+                                                      <v-icon>power_settings_new</v-icon>
+                                                </v-list-tile-action>
+                                          </v-list-tile>
+
+                                    </v-list>
+                              </v-menu>
                         </v-toolbar>
                         <!--TOOLBAR END-->
 
@@ -93,35 +126,39 @@
       <!--BASE-SCRIPTS-END--->
 
       <script>
+            Vue.use(Vuetify, 
+            {
+                  theme: 
+                  {
+                        primary: '#3f51b5',
+                        secondary: '#b0bec5',
+                        accent: '#8c9eff',
+                        error: '#b71c1c'
+                  }
+            });
+            
             var template_app = new Vue
             ({
                   el: '#template_app',
                   data: 
                   {
                         drawer_title: '<b>APP-NAME</b>',
-                        dialog: false,
                         drawer: null,
                         items: 
                         [
-                              { icon: 'contacts', text: 'Contacts' },
-                              { icon: 'history', text: 'Frequently contacted' },
-                              { icon: 'content_copy', text: 'Duplicates' },
-                              { icon: 'settings', text: 'Settings' },
-                              { icon: 'chat_bubble', text: 'Send feedback' },
-                              { icon: 'help', text: 'Help' },
-                              { icon: 'phonelink', text: 'App downloads' },
-                              { icon: 'keyboard', text: 'Go to the old version' },
-                              {
-                                    icon: 'keyboard_arrow_up', 'icon-alt': 'keyboard_arrow_down', text: 'Labels',
-                                    model: true,
+                              { text: 'Formularios', subheader: true },
+                              { text: 'Contacts', icon: 'contacts' },
+                              { text: 'Frequently contacted', icon: 'history' },
+                              { text: 'Duplicates', icon: 'content_copy' },
+                              { text: 'App downloads', icon: 'phonelink' },
+                              { text: 'Go to the old version', icon: 'keyboard' },
+                              { text: 'Labels', icon: 'keyboard_arrow_up', 'icon-alt': 'keyboard_arrow_down', model: true,
                                     children: 
                                     [
-                                          { icon: 'add', text: 'Create label' }
+                                          { text: 'Create label', icon: 'add' }
                                     ]
                               },
-                              {
-                                    icon: 'keyboard_arrow_up', 'icon-alt': 'keyboard_arrow_down', text: 'More',
-                                    model: false,
+                              { text: 'More', icon: 'keyboard_arrow_up', 'icon-alt': 'keyboard_arrow_down', model: false,
                                     children: 
                                     [
                                           { text: 'Import' },
@@ -130,7 +167,11 @@
                                           { text: 'Undo changes' },
                                           { text: 'Other contacts' }
                                     ]
-                              }
+                              },
+                              { text: 'Ajustes', subheader: true },
+                              { text: 'Settings', icon: 'settings' },
+                              { text: 'Send feedback', icon: 'chat_bubble' },
+                              { text: 'Help', icon: 'help' }
 
                         ]
                   }
