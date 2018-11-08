@@ -9,6 +9,8 @@
       <link rel="stylesheet" type="text/css" href="css/material-design-icons.min.css">
       <link rel="stylesheet" type="text/css" href="css/vuetify.min.css">
       <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+      <style><%= yield :stylesheets %></style>
+      <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
    </head>
 
    <body>
@@ -69,46 +71,65 @@
                                     <span class="hidden-sm-and-down" v-html="drawer_title"></span>
                               </v-toolbar-title>
                               <v-spacer></v-spacer>
-                              
 
-                              <v-menu :nudge-width="100">
-                               
-                                    <v-btn slot="activator" icon>
-                                          <v-icon>more_vert</v-icon>
+                              <v-toolbar-items>
+
+                                    <v-btn flat v-if="user_signed_in"> 
+                                          <v-icon>account_box</v-icon> <div class="text-xs-center mt-3" v-html="current_user.email"></div>
                                     </v-btn>
-                                   
-                                    <v-list>
 
-                                          <v-list-tile @click="">
-                                                <v-list-tile-content>
-                                                      <v-list-tile-title>ACCOUNT</v-list-tile-title>
-                                                </v-list-tile-content>
-                                                <v-list-tile-action>
-                                                      <v-icon>account_circle</v-icon>
-                                                </v-list-tile-action>
-                                          </v-list-tile>
+                                    <v-menu :nudge-width="100">
+                                          <v-btn slot="activator" icon>
+                                                <v-icon>more_vert</v-icon>
+                                          </v-btn>
+                                    
+                                          <v-list>
 
-                                          <v-list-tile @click="">
-                                                <v-list-tile-content>
-                                                      <v-list-tile-title>LOGOUT</v-list-tile-title>
-                                                </v-list-tile-content>
-                                                <v-list-tile-action>
-                                                      <v-icon>power_settings_new</v-icon>
-                                                </v-list-tile-action>
-                                          </v-list-tile>
+                                                <v-list-tile @click="">
+                                                      <v-list-tile-content>
+                                                            <v-list-tile-title>ACCOUNT</v-list-tile-title>
+                                                      </v-list-tile-content>
+                                                      <v-list-tile-action>
+                                                            <v-icon>account_circle</v-icon>
+                                                      </v-list-tile-action>
+                                                </v-list-tile>
 
-                                    </v-list>
-                              </v-menu>
+                                                <v-list-tile @click="">
+                                                      <v-list-tile-content>
+                                                            <v-list-tile-title>LOGOUT</v-list-tile-title>
+                                                      </v-list-tile-content>
+                                                      <v-list-tile-action>
+                                                            <v-icon>power_settings_new</v-icon>
+                                                      </v-list-tile-action>
+                                                </v-list-tile>
+
+                                          </v-list>
+                                    </v-menu>
+                              </v-toolbar-items>
+                              
+                              
                         </v-toolbar>
                         <!--TOOLBAR END-->
 
                         <!--CONTENT START-->
                         <v-content>
-                              <v-container fluid fill-height>
-                                    <v-layout justify-center align-center>
-                                          
-                                    </v-layout>
-                              </v-container>
+                            <template v-for="(message, type) in flash" v-if="message">
+                                    <v-container grid-list-md text-xs-center>
+                                          <v-layout row wrap>
+                                                <v-flex xs12>
+                                                      <v-alert :value="true" dismissible v-bind:type="type" transition="scale-transition">
+                                                            {{message}}
+                                                      </v-alert>
+                                                </v-flex>
+                                          </v-layout>
+                                    </v-container>
+                            </template>
+                            
+
+                            <v-container fluid fill-height>
+                                <%= content_for?(:content) ? yield(:content) : yield %>
+                            </v-container>
+
                         </v-content>
                         <!--CONTENT END-->
                         
@@ -120,12 +141,13 @@
       <!--BODY-END-->
 
       <!--BASE-SCRIPTS-START--->
-      <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+      
       <script src="js/vue.min.js"></script>
       <script src="js/vuetify.min.js"></script>
       <!--BASE-SCRIPTS-END--->
 
       <script>
+            Vue.config.devtools = true;
             Vue.use(Vuetify, 
             {
                   theme: 
@@ -143,6 +165,13 @@
                   data: 
                   {
                         drawer_title: '<b>APP-NAME</b>',
+                        flash:
+                        {
+                            "error": '<%= flash[:alert] %>',
+                            "info": '<%= flash[:notice] %>'
+                        },
+                        user_signed_in: <%= user_signed_in? %>,
+                        current_user: <%= current_user.to_json %>,
                         drawer: null,
                         items: 
                         [
@@ -177,6 +206,6 @@
                   }
             });
       </script>
-      
+      <%= yield :scripts %>
    </body>
 </html>

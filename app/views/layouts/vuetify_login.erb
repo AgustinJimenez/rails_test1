@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>RorTest1</title>
+      <%= csrf_meta_tags %>
+      <%= csp_meta_tag %>
+
+      <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+      <link rel="stylesheet" type="text/css" href="/css/material-design-icons.min.css">
+      <link rel="stylesheet" type="text/css" href="/css/vuetify.min.css">
+      <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+      <style><%= yield :stylesheets %></style>
+   </head>
+
+   <body>
+      <!--BODY-START--->
+      <div id="template_app">
+        <template>
+            <v-app>
+                <v-content>
+                    <v-container fluid fill-height>
+                        <%= yield :content %>
+                    </v-container>
+                </v-content>
+            </v-app>
+        </template>
+    </div>
+      <!--BODY-END-->
+
+      <!--BASE-SCRIPTS-START--->
+      
+      <script src="/js/vue.min.js"></script>
+      <script src="/js/vuetify.min.js"></script>
+      <!--BASE-SCRIPTS-END--->
+
+      <script>
+            var template_app = new Vue
+            ({
+                el: '#template_app',
+                data:
+                {
+                    drawer: null
+                },
+                props: 
+                {
+                    source: String
+                }
+            });
+      </script>
+      <%= yield :scripts %>
+   </body>
+</html>

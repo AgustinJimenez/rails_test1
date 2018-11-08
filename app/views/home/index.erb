@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>RorTest1</title>
+      <%= csrf_meta_tags %>
+      <%= csp_meta_tag %>
+
+      <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+      <link rel="stylesheet" type="text/css" href="css/material-design-icons.min.css">
+      <link rel="stylesheet" type="text/css" href="css/vuetify.min.css">
+      <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+      <%= yield :head %>
+      <%= javascript_include_tag 'application', 'data-turbolinks-track': 'reload' %>
+   </head>
+
+   <body>
+        <!--BODY-START--->
+        <div id="template_app">
+            <template>
+                <v-app>
+                    <v-toolbar dark color="red darken-4" app>
+
+                        <v-toolbar-title>RAILS HOME PAGE</v-toolbar-title>
+                        <v-spacer></v-spacer>
+
+                        <v-toolbar-items class="hidden-sm-and-down" v-if="user_signed_in">
+                            <v-btn flat href="<%= new_user_session_path %>">DASHBOARD</v-btn>
+                        </v-toolbar-items>
+
+                        <v-toolbar-items class="hidden-sm-and-down" v-else>
+                            <v-btn flat href="<%= new_user_session_path %>">LOGIN</v-btn>
+                        </v-toolbar-items>
+
+                    </v-toolbar>
+                    <v-content dark color="grey lighten-1">
+                        <v-container fluid>
+                            <v-layout justify-center align-center>
+                                
+                            </v-layout>
+                        </v-container>
+                    </v-content>
+                    <v-footer app></v-footer>
+                </v-app>
+            </template>
+        </div>
+      <!--BODY-END-->
+      
+      <!--BASE-SCRIPTS-START--->
+      
+        <script src="js/vue.min.js"></script>
+        <script src="js/vuetify.min.js"></script>
+        <!--BASE-SCRIPTS-END--->
+
+        <script>
+            var template_app = new Vue
+            ({
+                el: '#template_app',
+                data: 
+                {
+                    user_signed_in: <%= user_signed_in? %>,
+                    current_user: <%= current_user.to_json %>
+                }
+            });
+        </script>
+        <%= yield :scripts %>
+   </body>
+</html>
+
